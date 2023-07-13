@@ -4,34 +4,33 @@ import { useState } from 'react'
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form'
 
 type FormData = {
-  name: string
-  role: string
-  company: string
-  email: string
-  phoneNumber: number
-  message: string
-  privacePolicy: boolean;
-  country: string;
+  name: string | undefined
+  role: string | undefined
+  company: string | undefined
+  email: string | undefined
+  phoneNumber: string | undefined
+  message: string | undefined
+  privacePolicy: boolean | undefined
+  country: string | undefined
 }
 
 export default function Home() {
-const [data,setData]= useState<FormData>()
-
+  const [data, setData] = useState<FormData>()
 
   const mockAPI = async () => {
     return new Promise<FormData>((resolve, reject) => {
       setTimeout(() => {
         resolve({
-          name: 'Victor Ciechovicz',
-          role: 'Developer',
-          company: 'Merx',
-          email: 'someemai@gmail.com',
-          phoneNumber: 414546789542,
-          message: 'Gostaria de mais informações',
-          privacePolicy: true,
-          country:"US"
+          name: data?.name,
+          role: data?.role,
+          company: data?.company,
+          email: data?.email,
+          phoneNumber: data?.phoneNumber,
+          message: data?.message,
+          privacePolicy: data?.privacePolicy,
+          country: data?.country
         })
-      }, 1000)
+      }, 3000)
     })
   }
 
@@ -40,14 +39,14 @@ const [data,setData]= useState<FormData>()
     register,
     formState: { errors }
   } = useForm<FormData>({
-    defaultValues: data
+    defaultValues: async () => mockAPI()
   })
 
-  const onSubmit: SubmitHandler<FormData> = (data: FormData) =>
-  setData(data)
+  const onSubmit: SubmitHandler<FormData> = (data: FormData) => {
+    setData(data)
+  }
 
   const onError: SubmitErrorHandler<FormData> = errors => console.log(errors)
-
 
   return (
     <div className="isolate bg-white px-6 py-2 sm:py-4 lg:px-8">
@@ -55,7 +54,6 @@ const [data,setData]= useState<FormData>()
         className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
         aria-hidden="true"
       >
-       
         <div
           className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
           style={{
@@ -113,8 +111,7 @@ const [data,setData]= useState<FormData>()
             <div className="mt-2.5">
               <input
                 {...register('role', {
-                  required: 'Cargo é obrigatório.',
-                
+                  required: 'Cargo é obrigatório.'
                 })}
                 type="text"
                 name="role"
@@ -136,8 +133,7 @@ const [data,setData]= useState<FormData>()
             <div className="mt-2.5">
               <input
                 {...register('company', {
-                  required: 'Empresa é obrigatório.',
-                
+                  required: 'Empresa é obrigatório.'
                 })}
                 type="text"
                 name="company"
@@ -160,8 +156,7 @@ const [data,setData]= useState<FormData>()
             <div className="mt-2.5">
               <input
                 {...register('email', {
-                  required: 'Cargo é obrigatório.',
-               
+                  required: 'Cargo é obrigatório.'
                 })}
                 type="email"
                 name="email"
@@ -186,10 +181,9 @@ const [data,setData]= useState<FormData>()
                   País
                 </label>
                 <select
-                       {...register('country', {
-                        required: 'Pais é obrigatório.',
-                     
-                      })}
+                  {...register('country', {
+                    required: 'Pais é obrigatório.'
+                  })}
                   id="country"
                   name="country"
                   className="h-full rounded-md border-0 bg-transparent bg-none py-0 pl-4 pr-9 text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
@@ -200,8 +194,8 @@ const [data,setData]= useState<FormData>()
                   <option>EU</option>
                 </select>
                 {errors?.country && (
-                <span className="text-red-700">{errors.country.message}</span>
-              )}
+                  <span className="text-red-700">{errors.country.message}</span>
+                )}
               </div>
               <input
                 {...register('phoneNumber', {
